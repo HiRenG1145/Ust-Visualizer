@@ -41,7 +41,16 @@ public partial class MainWindow : Window
     private void OnNavSelectionChanged(object? sender, FANavigationViewSelectionChangedEventArgs e)
     {
         if (e.SelectedItem is FANavigationViewItem item && item.Tag is string tag)
+        {
+            if (tag == "theme")
+            {
+                // 底部“切换主题”项：执行主题切换，不切换页面
+                if (DataContext is MainViewModel vm)
+                    vm.ToggleThemeCommand.Execute(null);
+                return;
+            }
             ShowPage(tag);
+        }
     }
 
 
@@ -198,5 +207,7 @@ public partial class MainWindow : Window
         }
     }
 }
+
+
 
 

@@ -10,8 +10,8 @@
     </Application.DataTemplates>
 
     <Application.Resources>
-        <!-- Fluent 图标字体（FASymbol 使用）：优先 Segoe Fluent Icons，Win10 回退 MDL2 -->
-        <FontFamily x:Key="SymbolThemeFontFamily">Segoe Fluent Icons</FontFamily>
+        <!-- 图标字体：Segoe MDL2 Assets 为实心风格，比 Fluent Icons 细线条更醒目 -->
+        <FontFamily x:Key="SymbolThemeFontFamily">Segoe MDL2 Assets</FontFamily>
     </Application.Resources>
 
     <Application.Styles>
@@ -19,3 +19,4 @@
         <fa:FluentAvaloniaTheme PreferUserAccentColor="True" />
     </Application.Styles>
 </Application>
+

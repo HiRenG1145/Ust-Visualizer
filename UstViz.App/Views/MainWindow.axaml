@@ -56,7 +56,7 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <fa:FASymbolIcon Symbol="{x:Static fa:FASymbol.Audio}" FontSize="24" VerticalAlignment="Center" />
                     <StackPanel>
-                        <TextBlock Text="UST Visualizer" FontSize="18" FontWeight="SemiBold" />
+                        <TextBlock Text="UST Visualizer" FontSize="20" FontWeight="SemiBold" />
                         <TextBlock Text="UTAU 工程可视化 · 生成滚动音符视频" FontSize="12" Opacity="0.65" />
                     </StackPanel>
                 </StackPanel>
@@ -75,35 +75,42 @@
             <fa:FANavigationView.MenuItems>
                 <fa:FANavigationViewItem Content="文件" Tag="file">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Folder}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Folder}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem Content="生成" Tag="generate">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Video}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Video}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem Content="基本设置" Tag="basic">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem Content="动画设置" Tag="animation">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem Content="样式设置" Tag="style">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Font}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Font}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem Content="颜色设置" Tag="color">
                     <fa:FANavigationViewItem.IconSource>
-                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Highlight}" FontSize="16" />
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Highlight}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
                 </fa:FANavigationViewItem>
             </fa:FANavigationView.MenuItems>
+            <fa:FANavigationView.FooterMenuItems>
+                <fa:FANavigationViewItem Content="切换主题" Tag="theme">
+                    <fa:FANavigationViewItem.IconSource>
+                        <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="20" />
+                    </fa:FANavigationViewItem.IconSource>
+                </fa:FANavigationViewItem>
+            </fa:FANavigationView.FooterMenuItems>
 
             <fa:FANavigationView.Content>
                 <Grid Margin="16,8,16,16" RowDefinitions="Auto,*">
@@ -123,7 +130,7 @@
                         <StackPanel MaxWidth="720" HorizontalAlignment="Stretch" Margin="0,0,12,0">
                             <fa:FASettingsExpander Header="文件设置" Description="选择 UST、输出目录与字体">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Folder}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Folder}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Spacing="6" Margin="0,6,0,0">
                                     <Button Content="选择 UST 文件" Classes="quick" Command="{Binding SelectUstFileCommand}" />
@@ -142,7 +149,7 @@
                         <StackPanel MaxWidth="720" Spacing="12" Margin="0,0,12,0">
                             <fa:FASettingsExpander Header="快速操作" Description="预览与导出视频">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Spacing="6" Margin="0,6,0,0">
                                     <Button Content="实时预览" Classes="quick accent" Command="{Binding StartPreviewCommand}" />
@@ -153,7 +160,7 @@
                             </fa:FASettingsExpander>
                             <fa:FASettingsExpander Header="输出设置" Description="视频格式与 ffmpeg">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Video}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Video}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Spacing="8" Margin="0,6,0,0">
                                     <Grid ColumnDefinitions="56,*">
@@ -172,7 +179,7 @@
                             </fa:FASettingsExpander>
                             <fa:FASettingsExpander Header="配置管理" Description="保存/加载 JSON 配置">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Save}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Save}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Spacing="6" Margin="0,6,0,0">
                                     <Button Content="保存配置" Classes="quick" Command="{Binding SaveConfigCommand}" />
@@ -186,7 +193,7 @@
                     <ScrollViewer Grid.Row="1" x:Name="PageBasic" IsVisible="False" VerticalScrollBarVisibility="Auto">
                         <fa:FASettingsExpander Header="基本设置" Description="分辨率 · 帧率 · 字体 · 背景" MaxWidth="720" HorizontalAlignment="Stretch" Margin="0,0,12,0">
                             <fa:FASettingsExpander.IconSource>
-                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="18" />
+                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="20" />
                             </fa:FASettingsExpander.IconSource>
                             <StackPanel Margin="0,4,0,0">
                                 <TextBlock Text="分辨率" Classes="section" />
@@ -224,7 +231,7 @@
                     <ScrollViewer Grid.Row="1" x:Name="PageAnimation" IsVisible="False" VerticalScrollBarVisibility="Auto">
                         <fa:FASettingsExpander Header="动画设置" Description="滚动速度 · 判定线 · 淡入淡出 · 纵向偏移" MaxWidth="720" HorizontalAlignment="Stretch" Margin="0,0,12,0">
                             <fa:FASettingsExpander.IconSource>
-                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="18" />
+                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Play}" FontSize="20" />
                             </fa:FASettingsExpander.IconSource>
                             <StackPanel Margin="0,4,0,0">
                                 <Grid ColumnDefinitions="96,*,64">
@@ -260,7 +267,7 @@
                         <StackPanel MaxWidth="720" Spacing="12" Margin="0,0,12,0">
                             <fa:FASettingsExpander Header="音符与歌词" Description="厚度 · 圆角 · 阴影 · 歌词显示">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Font}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Font}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Margin="0,4,0,0">
                                     <Grid ColumnDefinitions="96,*,56">
@@ -287,7 +294,7 @@
                             </fa:FASettingsExpander>
                             <fa:FASettingsExpander Header="音高曲线" Description="显示 · 宽度 · 阴影 · 端点 · 平滑度">
                                 <fa:FASettingsExpander.IconSource>
-                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Ruler}" FontSize="18" />
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Ruler}" FontSize="20" />
                                 </fa:FASettingsExpander.IconSource>
                                 <StackPanel Margin="0,4,0,0">
                                     <CheckBox Content="显示音高曲线" IsChecked="{Binding ShowPitchCurve, Mode=TwoWay}" />
@@ -322,7 +329,7 @@
                     <ScrollViewer Grid.Row="1" x:Name="PageColor" IsVisible="False" VerticalScrollBarVisibility="Auto">
                         <fa:FASettingsExpander Header="颜色" Description="音符 · 歌词 · 背景 · 判定线 · 曲线" MaxWidth="720" HorizontalAlignment="Stretch" Margin="0,0,12,0">
                             <fa:FASettingsExpander.IconSource>
-                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Highlight}" FontSize="18" />
+                                <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Highlight}" FontSize="20" />
                             </fa:FASettingsExpander.IconSource>
                             <StackPanel Margin="0,4,0,0">
                                 <Grid ColumnDefinitions="140,80,*,Auto">
@@ -382,5 +389,8 @@
         </fa:FANavigationView>
     </DockPanel>
 </Window>
+
+
+
 
 
