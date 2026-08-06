@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="UstViz.Cli/UstViz.Cli.csproj" />
   <Project Path="UstViz.Core/UstViz.Core.csproj" />
+  <Project Path="UstViz.Rendering/UstViz.Rendering.csproj" />
   <Project Path="UstViz.Tests/UstViz.Tests.csproj" />
 </Solution>

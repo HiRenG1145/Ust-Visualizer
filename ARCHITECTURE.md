@@ -7,7 +7,8 @@
 | 项目 | 职责 | 允许的依赖 |
 |---|---|---|
 | `UstViz.Core` | 纯领域层：模型 / 解析 / 算法 / 配置 / 抽象契约 / 基础设施默认实现 | 仅 BCL + `System.Text.Json`（配置序列化）。**禁止** UI、渲染、音频库 |
-| `UstViz.Rendering`（计划 P2） | SkiaSharp 渲染引擎（帧渲染 / 字体 / PNG 导出） | `UstViz.Core` + SkiaSharp |
+| `UstViz.Rendering` | SkiaSharp 渲染引擎（帧渲染 / 字体 / 视频导出） | `UstViz.Core` + SkiaSharp |
+| `UstViz.Cli` | 命令行导出工具（UST → 视频） | `UstViz.Core` + `UstViz.Rendering` |
 | `UstViz.Audio`（计划 P3） | 音频播放实现（NAudio 等） | `UstViz.Core`（实现 `IAudioPlayer`）+ 音频库 |
 | `UstViz.App`（计划 P4） | Avalonia UI（**主题：FluentAvalonia**） | `UstViz.Core` / `Rendering` / `Audio` + Avalonia |
 | `UstViz.Tests` | xUnit 测试 | 各项目 + xUnit |
@@ -36,6 +37,8 @@ Rendering / App（边缘层，可依赖第三方库）
 
 - UI 框架：Avalonia（稳定版 11.3.x）
 - **主题：FluentAvalonia**（含 ColorPicker 等控件）
-- 渲染：SkiaSharp
+- 渲染：SkiaSharp（`UstViz.Rendering`：`FrameRenderer` + `VideoExportService`）
+- 视频输出：MJPEG AVI（自写写入器，无外部依赖）/ FFmpeg H.264 MP4（提供 ffmpeg 路径时）
 - 音频：接口 `IAudioPlayer`（Core），实现待定（NAudio / ManagedBass）
 - 配置序列化：System.Text.Json
+

@@ -8,3 +8,7 @@ obj/
 # Python
 __pycache__/
 *.py[cod]
+
+# 渲染效果图（测试产物）
+Test/output/
+

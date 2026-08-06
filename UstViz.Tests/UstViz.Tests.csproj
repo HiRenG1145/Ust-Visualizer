@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UstViz.Core\UstViz.Core.csproj" />
+    <ProjectReference Include="..\UstViz.Rendering\UstViz.Rendering.csproj" />
   </ItemGroup>
 
 
@@ -27,4 +28,9 @@
     <None Include="../Test/热异常.ust" Link="Test/热异常.ust" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Test/python_baseline.json" Link="Test/python_baseline.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../Test/python_frames/*.png" Link="Test/python_frames/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Test/python_frame_snapshot.json" Link="Test/python_frame_snapshot.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
+
