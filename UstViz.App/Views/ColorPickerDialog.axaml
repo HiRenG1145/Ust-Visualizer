@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="UstViz.App.Views.ColorPickerDialog"
+        Width="360" Height="320"
+        WindowStartupLocation="CenterOwner"
+        Title="选择颜色"
+        CanResize="False"
+        ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="10">
+        <Border x:Name="Preview" Height="44" CornerRadius="6" BorderBrush="#808080" BorderThickness="1" />
+
+        <Grid ColumnDefinitions="Auto,*,44" RowDefinitions="Auto,Auto,Auto" Margin="0,6,0,0">
+            <TextBlock Text="R:" VerticalAlignment="Center" />
+            <Slider x:Name="RedSlider" Grid.Column="1" Minimum="0" Maximum="255"
+                    Margin="10,0" ValueChanged="OnRgbChanged" />
+            <TextBlock x:Name="RedValue" Grid.Column="2" TextAlignment="Right" VerticalAlignment="Center" />
+
+            <TextBlock Grid.Row="1" Text="G:" VerticalAlignment="Center" />
+            <Slider x:Name="GreenSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255"
+                    Margin="10,0" ValueChanged="OnRgbChanged" />
+            <TextBlock x:Name="GreenValue" Grid.Row="1" Grid.Column="2" TextAlignment="Right" VerticalAlignment="Center" />
+
+            <TextBlock Grid.Row="2" Text="B:" VerticalAlignment="Center" />
+            <Slider x:Name="BlueSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255"
+                    Margin="10,0" ValueChanged="OnRgbChanged" />
+            <TextBlock x:Name="BlueValue" Grid.Row="2" Grid.Column="2" TextAlignment="Right" VerticalAlignment="Center" />
+        </Grid>
+
+        <Grid ColumnDefinitions="Auto,*" Margin="0,4,0,0">
+            <TextBlock Text="Hex: #" VerticalAlignment="Center" />
+            <TextBox x:Name="HexBox" Grid.Column="1" TextChanged="OnHexChanged" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,6,0,0">
+            <Button Content="确定" Width="80" Click="OnOk" />
+            <Button Content="取消" Width="80" Click="OnCancel" />
+        </StackPanel>
+    </StackPanel>
+</Window>
+

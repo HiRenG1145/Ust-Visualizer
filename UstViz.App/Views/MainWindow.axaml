@@ -1,0 +1,297 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:UstViz.App.ViewModels"
+        xmlns:conv="using:UstViz.App.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1100" d:DesignHeight="750"
+        x:Class="UstViz.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Width="1100" Height="750"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Title="UST Visualizer - UST 可视化">
+
+    <Window.Resources>
+        <conv:StringToBrushConverter x:Key="BrushConverter" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.hint">
+            <Setter Property="Foreground" Value="#808080" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style Selector="TextBlock.cardTitle">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+        <Style Selector="Button.action">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+    </Window.Styles>
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+
+        <!-- ============ 底部：进度 + 日志 ============ -->
+        <Border DockPanel.Dock="Bottom" Classes="card" Margin="0,10,0,0">
+            <StackPanel Spacing="6">
+                <ProgressBar Minimum="0" Maximum="100"
+                             Value="{Binding ProgressValue}" Height="18" ShowProgressText="True" />
+                <TextBlock Text="{Binding ProgressText}" FontSize="12" />
+                <TextBlock Text="📋 日志" Classes="cardTitle" Margin="0,6,0,0" />
+                <ListBox ItemsSource="{Binding Logs}" Height="110" FontSize="12" />
+            </StackPanel>
+        </Border>
+
+        <!-- ============ 主体：左面板 + 右面板 ============ -->
+        <Grid ColumnDefinitions="280,*">
+            <!-- 左侧面板 -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,10,0">
+                <StackPanel>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="📁 文件设置" Classes="cardTitle" />
+                            <Button Content="选择 UST 文件" Classes="action"
+                                    Command="{Binding SelectUstFileCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding UstFile}"
+                                       ToolTip.Tip="{Binding UstFile}" />
+                            <Button Content="选择输出文件夹" Classes="action" Margin="0,8,0,2"
+                                    Command="{Binding SelectOutputFolderCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding OutputFolder}"
+                                       ToolTip.Tip="{Binding OutputFolder}" />
+                            <Button Content="选择字体文件" Classes="action" Margin="0,8,0,2"
+                                    Command="{Binding SelectFontFileCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding FontFile}"
+                                       ToolTip.Tip="{Binding FontFile}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="⚡ 快速操作" Classes="cardTitle" />
+                            <Button Content="🎬 生成视频" Classes="action"
+                                    Command="{Binding GenerateCommand}" />
+                            <Button Content="⏹️ 停止生成" Classes="action"
+                                    Command="{Binding StopGenerateCommand}" />
+                            <Button Content="☀️/🌙 切换主题" Classes="action" Margin="0,8,0,2"
+                                    Command="{Binding ToggleThemeCommand}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="⚙️ 配置管理" Classes="cardTitle" />
+                            <Button Content="💾 保存配置" Classes="action"
+                                    Command="{Binding SaveConfigCommand}" />
+                            <Button Content="📂 加载配置" Classes="action"
+                                    Command="{Binding LoadConfigCommand}" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 右侧面板：TabControl -->
+            <TabControl Grid.Column="1" Margin="0">
+
+                <!-- ===== 基本设置 ===== -->
+                <TabItem Header="📐 基本设置">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12" Spacing="8">
+                            <TextBlock Text="📺 分辨率设置" Classes="cardTitle" />
+                            <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
+                                <TextBlock Text="宽度:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="320" Maximum="7680"
+                                        Value="{Binding Width, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding Width}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="1" Text="高度:" VerticalAlignment="Center" />
+                                <Slider Grid.Row="1" Grid.Column="1" Minimum="240" Maximum="4320"
+                                        Value="{Binding Height, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Height}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
+                            </Grid>
+
+                            <TextBlock Text="⚙️ 其他设置" Classes="cardTitle" Margin="0,8,0,0" />
+                            <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
+                                <TextBlock Text="帧率:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="1" Maximum="60"
+                                        Value="{Binding Fps, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding Fps}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="1" Text="字体大小:" VerticalAlignment="Center" />
+                                <Slider Grid.Row="1" Grid.Column="1" Minimum="8" Maximum="96"
+                                        Value="{Binding FontSize, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding FontSize}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+                                <CheckBox Content="透明背景" IsChecked="{Binding TransparentBackground, Mode=TwoWay}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ===== 动画设置 ===== -->
+                <TabItem Header="🎬 动画设置">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12" Spacing="8">
+                            <TextBlock Text="📊 滚动速度" Classes="cardTitle" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Slider Minimum="100" Maximum="2000"
+                                        Value="{Binding ScrollSpeed, Mode=TwoWay}" Margin="0,0,10,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding ScrollSpeed}" MinWidth="56" TextAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="🎯 判定线位置" Classes="cardTitle" Margin="0,8,0,0" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Slider Minimum="0.1" Maximum="0.5"
+                                        Value="{Binding JudgmentLinePosition, Mode=TwoWay}" Margin="0,0,10,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding JudgmentLinePosition}" MinWidth="56" TextAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="🌅 淡入淡出时长（秒）" Classes="cardTitle" Margin="0,8,0,0" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Slider Minimum="0" Maximum="5"
+                                        Value="{Binding FadeDuration, Mode=TwoWay}" Margin="0,0,10,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding FadeDuration}" MinWidth="56" TextAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="📏 纵向位置调整" Classes="cardTitle" Margin="0,8,0,0" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Slider Minimum="-200" Maximum="200"
+                                        Value="{Binding VerticalOffset, Mode=TwoWay}" Margin="0,0,10,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding VerticalOffset}" MinWidth="56" TextAlignment="Right" />
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ===== 样式设置 ===== -->
+                <TabItem Header="🎨 样式设置">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12" Spacing="8">
+
+                            <TextBlock Text="🎹 音符样式" Classes="cardTitle" />
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="音符厚度:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="4" Maximum="80"
+                                        Value="{Binding NoteHeight, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding NoteHeight}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="圆角半径:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="0" Maximum="40"
+                                        Value="{Binding NoteCornerRadius, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding NoteCornerRadius}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+                            <CheckBox Content="音符阴影" IsChecked="{Binding NoteShadow, Mode=TwoWay}" />
+
+                            <TextBlock Text="📝 歌词显示" Classes="cardTitle" Margin="0,8,0,0" />
+                            <CheckBox Content="显示歌词" IsChecked="{Binding ShowLyric, Mode=TwoWay}" />
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="垂直偏移:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="5" Maximum="80"
+                                        Value="{Binding LyricOffset, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding LyricOffset}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="🎶 音高曲线样式" Classes="cardTitle" Margin="0,8,0,0" />
+                            <CheckBox Content="显示音高曲线" IsChecked="{Binding ShowPitchCurve, Mode=TwoWay}" />
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="曲线宽度:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="1" Maximum="10"
+                                        Value="{Binding PitchCurveWidth, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveWidth}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <CheckBox Content="曲线阴影" IsChecked="{Binding PitchCurveShadow, Mode=TwoWay}" />
+                                <CheckBox Content="显示端点" IsChecked="{Binding PitchCurveDots, Mode=TwoWay}" />
+                            </StackPanel>
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="端点大小:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="1" Maximum="20"
+                                        Value="{Binding PitchCurveDotSize, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveDotSize}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+                            <Grid ColumnDefinitions="110,*,Auto">
+                                <TextBlock Text="曲线平滑度:" VerticalAlignment="Center" />
+                                <Slider Grid.Column="1" Minimum="10" Maximum="300"
+                                        Value="{Binding PitchCurveSmoothness, Mode=TwoWay}" Margin="10,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveSmoothness}" MinWidth="40" TextAlignment="Right" />
+                            </Grid>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ===== 颜色设置 ===== -->
+                <TabItem Header="🌈 颜色设置">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12" Spacing="8">
+
+                            <Grid ColumnDefinitions="150,*,60,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,0,0,8">
+                                <TextBlock Grid.Row="0" Text="音符颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="0" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding NoteColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding NoteColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="0" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="NoteColorHex" />
+
+                                <TextBlock Grid.Row="1" Text="激活音符颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="1" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding ActiveNoteColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ActiveNoteColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="1" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="ActiveNoteColorHex" />
+
+                                <TextBlock Grid.Row="2" Text="歌词颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="2" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding LyricColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LyricColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="2" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="LyricColorHex" />
+
+                                <TextBlock Grid.Row="3" Text="背景颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="3" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding BackgroundColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding BackgroundColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="3" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="BackgroundColorHex" />
+
+                                <TextBlock Grid.Row="4" Text="判定线颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="4" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding JudgmentLineColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding JudgmentLineColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="4" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="JudgmentLineColorHex" />
+
+                                <TextBlock Grid.Row="5" Text="音高曲线颜色:" VerticalAlignment="Center" />
+                                <Border Grid.Row="5" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
+                                        Background="{Binding PitchCurveColorHex, Converter={StaticResource BrushConverter}}" />
+                                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding PitchCurveColorHex}" VerticalAlignment="Center" />
+                                <Button Grid.Row="5" Grid.Column="3" Content="选择" Padding="12,4"
+                                        Command="{Binding ChooseColorCommand}" CommandParameter="PitchCurveColorHex" />
+                            </Grid>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</Window>
+
