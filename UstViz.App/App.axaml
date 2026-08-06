@@ -3,13 +3,14 @@
              xmlns:fa="using:FluentAvalonia.Styling"
              xmlns:local="using:UstViz.App"
              x:Class="UstViz.App.App"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <fa:FluentAvaloniaTheme />
+        <!-- PreferUserAccentColor: 主题色跟随系统强调色 -->
+        <fa:FluentAvaloniaTheme PreferUserAccentColor="True" />
     </Application.Styles>
 </Application>

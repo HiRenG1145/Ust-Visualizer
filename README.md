@@ -34,7 +34,7 @@ dotnet test Ust-Visualizer.slnx
 ### 单文件发布
 
 ```bash
-dotnet publish UstViz.App -c Release -o publish -r win-x64 --self-contained true
+dotnet publish UstViz.App -c Release -o publish -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
 发布产物为单个 `UstViz.App.exe`，可直接分发（Windows）。
@@ -77,4 +77,5 @@ UstViz.Tests     xUnit 测试（解析/渲染/视频/音频/预览逻辑）
 
 ## 许可证
 
-[MIT](LICENSE)
+[GNU General Public License v3.0](LICENSE)
+

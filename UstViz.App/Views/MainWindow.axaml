@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:UstViz.App.ViewModels"
         xmlns:conv="using:UstViz.App.Converters"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -23,20 +24,15 @@
             <Setter Property="FontSize" Value="12" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
-        <Style Selector="TextBlock.cardTitle">
-            <Setter Property="FontSize" Value="14" />
+        <!-- WinUI 风格强调色按钮（跟随系统强调色） -->
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="{DynamicResource SystemAccentColor}" />
+            <Setter Property="Foreground" Value="White" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
-        <Style Selector="Border.card">
-            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-            <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="Padding" Value="14" />
-            <Setter Property="Margin" Value="0,0,0,10" />
-        </Style>
-        <Style Selector="Button.action">
+        <Style Selector="Button.quick">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Margin" Value="0,3" />
         </Style>
     </Window.Styles>
 
@@ -44,69 +40,71 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
+    <DockPanel Margin="0">
+
+        <!-- ============ 顶部标题栏（WinUI 风格） ============ -->
+        <Border DockPanel.Dock="Top" Padding="20,14,16,10">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="🎵" FontSize="26" VerticalAlignment="Center" />
+                    <StackPanel>
+                        <TextBlock Text="UST Visualizer" FontSize="19" FontWeight="SemiBold" />
+                        <TextBlock Text="UTAU 工程可视化 · 生成滚动音符视频" FontSize="12" Opacity="0.65" />
+                    </StackPanel>
+                </StackPanel>
+                <Button Grid.Column="2" Classes="accent" Padding="14,6"
+                        Content="☀️ / 🌙 切换主题"
+                        Command="{Binding ToggleThemeCommand}" />
+            </Grid>
+        </Border>
 
         <!-- ============ 底部：进度 + 日志 ============ -->
-        <Border DockPanel.Dock="Bottom" Classes="card" Margin="0,10,0,0">
+        <Border DockPanel.Dock="Bottom" Margin="12,0,12,12" Padding="16" CornerRadius="10"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
             <StackPanel Spacing="6">
                 <ProgressBar Minimum="0" Maximum="100"
                              Value="{Binding ProgressValue}" Height="18" ShowProgressText="True" />
                 <TextBlock Text="{Binding ProgressText}" FontSize="12" />
-                <TextBlock Text="📋 日志" Classes="cardTitle" Margin="0,6,0,0" />
-                <ListBox ItemsSource="{Binding Logs}" Height="110" FontSize="12" />
+                <TextBlock Text="📋 日志" FontSize="14" FontWeight="SemiBold" Margin="0,8,0,0" />
+                <ListBox ItemsSource="{Binding Logs}" Height="104" FontSize="12" />
             </StackPanel>
         </Border>
 
         <!-- ============ 主体：左面板 + 右面板 ============ -->
-        <Grid ColumnDefinitions="280,*">
+        <Grid ColumnDefinitions="300,*" Margin="12,6,12,12">
+
             <!-- 左侧面板 -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,10,0">
-                <StackPanel>
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,12,0">
+                <StackPanel Spacing="12">
 
-                    <Border Classes="card">
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="📁 文件设置" Classes="cardTitle" />
-                            <Button Content="选择 UST 文件" Classes="action"
-                                    Command="{Binding SelectUstFileCommand}" />
-                            <TextBlock Classes="hint" Text="{Binding UstFile}"
-                                       ToolTip.Tip="{Binding UstFile}" />
-                            <Button Content="选择输出文件夹" Classes="action" Margin="0,8,0,2"
-                                    Command="{Binding SelectOutputFolderCommand}" />
-                            <TextBlock Classes="hint" Text="{Binding OutputFolder}"
-                                       ToolTip.Tip="{Binding OutputFolder}" />
-                            <Button Content="选择字体文件" Classes="action" Margin="0,8,0,2"
-                                    Command="{Binding SelectFontFileCommand}" />
-                            <TextBlock Classes="hint" Text="{Binding FontFile}"
-                                       ToolTip.Tip="{Binding FontFile}" />
+                    <fa:FASettingsExpander Header="📁 文件设置" Description="选择 UST、输出目录与字体">
+                        <StackPanel Spacing="6" Margin="0,6,0,0">
+                            <Button Content="选择 UST 文件" Classes="quick" Command="{Binding SelectUstFileCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding UstFile}" ToolTip.Tip="{Binding UstFile}" />
+                            <Button Content="选择输出文件夹" Classes="quick" Command="{Binding SelectOutputFolderCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding OutputFolder}" ToolTip.Tip="{Binding OutputFolder}" />
+                            <Button Content="选择字体文件" Classes="quick" Command="{Binding SelectFontFileCommand}" />
+                            <TextBlock Classes="hint" Text="{Binding FontFile}" ToolTip.Tip="{Binding FontFile}" />
                         </StackPanel>
-                    </Border>
+                    </fa:FASettingsExpander>
 
-                    <Border Classes="card">
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="⚡ 快速操作" Classes="cardTitle" />
-                            <Button Content="🎵 实时预览" Classes="action"
-                                    Command="{Binding StartPreviewCommand}" />
-                            <Button Content="🎬 生成视频" Classes="action"
-                                    Command="{Binding GenerateCommand}" />
-                            <Button Content="📂 打开输出文件夹" Classes="action"
-                                    Command="{Binding OpenOutputFolderCommand}" />
-                            <Button Content="⏹️ 停止生成" Classes="action"
-                                    Command="{Binding StopGenerateCommand}" />
-                            <Button Content="☀️/🌙 切换主题" Classes="action" Margin="0,8,0,2"
-                                    Command="{Binding ToggleThemeCommand}" />
+                    <fa:FASettingsExpander Header="⚡ 快速操作" Description="预览与导出">
+                        <StackPanel Spacing="6" Margin="0,6,0,0">
+                            <Button Content="🎵 实时预览" Classes="quick accent" Command="{Binding StartPreviewCommand}" />
+                            <Button Content="🎬 生成视频" Classes="quick accent" Command="{Binding GenerateCommand}" />
+                            <Button Content="⏹️ 停止生成" Classes="quick" Command="{Binding StopGenerateCommand}" />
+                            <Button Content="📂 打开输出文件夹" Classes="quick" Command="{Binding OpenOutputFolderCommand}" />
                         </StackPanel>
-                    </Border>
+                    </fa:FASettingsExpander>
 
-                    <Border Classes="card">
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="🎥 输出设置" Classes="cardTitle" />
-                            <Grid ColumnDefinitions="64,*">
+                    <fa:FASettingsExpander Header="🎥 输出设置" Description="视频格式与 ffmpeg">
+                        <StackPanel Spacing="8" Margin="0,6,0,0">
+                            <Grid ColumnDefinitions="56,*">
                                 <TextBlock Text="格式:" VerticalAlignment="Center" />
                                 <ComboBox Grid.Column="1" ItemsSource="{Binding OutputFormats}"
                                           SelectedItem="{Binding OutputFormat, Mode=TwoWay}" />
                             </Grid>
-                            <TextBlock Text="ffmpeg 路径（MP4 需要，可留空自动检测）"
-                                       FontSize="12" Foreground="#808080" TextWrapping="Wrap" />
+                            <TextBlock Classes="hint" Text="ffmpeg 路径（MP4 需要，可留空自动检测）" TextWrapping="Wrap" />
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBox Text="{Binding FfmpegPath, Mode=TwoWay}"
                                          PlaceholderText="自动检测 / 手动指定 ffmpeg.exe" />
@@ -114,54 +112,64 @@
                                         Command="{Binding SelectFfmpegFileCommand}" />
                             </Grid>
                         </StackPanel>
-                    </Border>
-                    <Border Classes="card">
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="⚙️ 配置管理" Classes="cardTitle" />
-                            <Button Content="💾 保存配置" Classes="action"
-                                    Command="{Binding SaveConfigCommand}" />
-                            <Button Content="📂 加载配置" Classes="action"
-                                    Command="{Binding LoadConfigCommand}" />
+                    </fa:FASettingsExpander>
+
+                    <fa:FASettingsExpander Header="⚙️ 配置管理" Description="保存/加载 JSON 配置">
+                        <StackPanel Spacing="6" Margin="0,6,0,0">
+                            <Button Content="💾 保存配置" Classes="quick" Command="{Binding SaveConfigCommand}" />
+                            <Button Content="📂 加载配置" Classes="quick" Command="{Binding LoadConfigCommand}" />
                         </StackPanel>
-                    </Border>
+                    </fa:FASettingsExpander>
 
                 </StackPanel>
             </ScrollViewer>
 
             <!-- 右侧面板：TabControl -->
-            <TabControl Grid.Column="1" Margin="0">
+            <TabControl Grid.Column="1">
 
                 <!-- ===== 基本设置 ===== -->
                 <TabItem Header="📐 基本设置">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12" Spacing="8">
-                            <TextBlock Text="📺 分辨率设置" Classes="cardTitle" />
-                            <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
-                                <TextBlock Text="宽度:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="320" Maximum="7680"
-                                        Value="{Binding Width, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding Width}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
-                                <TextBlock Grid.Row="1" Text="高度:" VerticalAlignment="Center" />
-                                <Slider Grid.Row="1" Grid.Column="1" Minimum="240" Maximum="4320"
-                                        Value="{Binding Height, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Height}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
-                            </Grid>
+                        <StackPanel Margin="4" Spacing="12">
 
-                            <TextBlock Text="⚙️ 其他设置" Classes="cardTitle" Margin="0,8,0,0" />
-                            <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
-                                <TextBlock Text="帧率:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="1" Maximum="60"
-                                        Value="{Binding Fps, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding Fps}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
-                                <TextBlock Grid.Row="1" Text="字体大小:" VerticalAlignment="Center" />
-                                <Slider Grid.Row="1" Grid.Column="1" Minimum="8" Maximum="96"
-                                        Value="{Binding FontSize, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding FontSize}" MinWidth="48" TextAlignment="Right" VerticalAlignment="Center" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="📺 分辨率设置" Description="输出视频的尺寸">
+                                <StackPanel Spacing="10" Margin="0,6,0,0">
+                                    <Grid ColumnDefinitions="56,*,56">
+                                        <TextBlock Text="宽度:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="320" Maximum="7680"
+                                                Value="{Binding Width, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Width}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="56,*,56">
+                                        <TextBlock Text="高度:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="240" Maximum="4320"
+                                                Value="{Binding Height, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Height}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                            </fa:FASettingsExpander>
 
-                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
-                                <CheckBox Content="透明背景" IsChecked="{Binding TransparentBackground, Mode=TwoWay}" />
-                            </StackPanel>
+                            <fa:FASettingsExpander Header="⚙️ 其他设置" Description="帧率与歌词字体">
+                                <StackPanel Spacing="10" Margin="0,6,0,0">
+                                    <Grid ColumnDefinitions="56,*,56">
+                                        <TextBlock Text="帧率:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="1" Maximum="60"
+                                                Value="{Binding Fps, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Fps}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="56,*,56">
+                                        <TextBlock Text="字体大小:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="8" Maximum="96"
+                                                Value="{Binding FontSize, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding FontSize}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                            </fa:FASettingsExpander>
+
+                            <fa:FASettingsExpander Header="🎨 背景设置" Description="透明背景用于叠加素材">
+                                <CheckBox Content="透明背景" IsChecked="{Binding TransparentBackground, Mode=TwoWay}" Margin="0,6,0,0" />
+                            </fa:FASettingsExpander>
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -169,34 +177,40 @@
                 <!-- ===== 动画设置 ===== -->
                 <TabItem Header="🎬 动画设置">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12" Spacing="8">
-                            <TextBlock Text="📊 滚动速度" Classes="cardTitle" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Slider Minimum="100" Maximum="2000"
-                                        Value="{Binding ScrollSpeed, Mode=TwoWay}" Margin="0,0,10,0" />
-                                <TextBlock Grid.Column="1" Text="{Binding ScrollSpeed}" MinWidth="56" TextAlignment="Right" />
-                            </Grid>
+                        <StackPanel Margin="4" Spacing="12">
 
-                            <TextBlock Text="🎯 判定线位置" Classes="cardTitle" Margin="0,8,0,0" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Slider Minimum="0.1" Maximum="0.5"
-                                        Value="{Binding JudgmentLinePosition, Mode=TwoWay}" Margin="0,0,10,0" />
-                                <TextBlock Grid.Column="1" Text="{Binding JudgmentLinePosition}" MinWidth="56" TextAlignment="Right" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="📊 滚动速度" Description="音符流动速度（像素/秒）">
+                                <Grid ColumnDefinitions="*,64" Margin="0,6,0,0">
+                                    <Slider Minimum="100" Maximum="2000"
+                                            Value="{Binding ScrollSpeed, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ScrollSpeed}" TextAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                            <TextBlock Text="🌅 淡入淡出时长（秒）" Classes="cardTitle" Margin="0,8,0,0" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Slider Minimum="0" Maximum="5"
-                                        Value="{Binding FadeDuration, Mode=TwoWay}" Margin="0,0,10,0" />
-                                <TextBlock Grid.Column="1" Text="{Binding FadeDuration}" MinWidth="56" TextAlignment="Right" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="🎯 判定线位置" Description="判定线距左侧的比例">
+                                <Grid ColumnDefinitions="*,64" Margin="0,6,0,0">
+                                    <Slider Minimum="0.1" Maximum="0.5"
+                                            Value="{Binding JudgmentLinePosition, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="1" Text="{Binding JudgmentLinePosition}" TextAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                            <TextBlock Text="📏 纵向位置调整" Classes="cardTitle" Margin="0,8,0,0" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Slider Minimum="-200" Maximum="200"
-                                        Value="{Binding VerticalOffset, Mode=TwoWay}" Margin="0,0,10,0" />
-                                <TextBlock Grid.Column="1" Text="{Binding VerticalOffset}" MinWidth="56" TextAlignment="Right" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="🌅 淡入淡出" Description="开头/结尾渐显渐隐（秒）">
+                                <Grid ColumnDefinitions="*,64" Margin="0,6,0,0">
+                                    <Slider Minimum="0" Maximum="5"
+                                            Value="{Binding FadeDuration, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="1" Text="{Binding FadeDuration}" TextAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </fa:FASettingsExpander>
+
+                            <fa:FASettingsExpander Header="📏 纵向位置调整" Description="整体上下偏移（像素）">
+                                <Grid ColumnDefinitions="*,64" Margin="0,6,0,0">
+                                    <Slider Minimum="-200" Maximum="200"
+                                            Value="{Binding VerticalOffset, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="1" Text="{Binding VerticalOffset}" TextAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </fa:FASettingsExpander>
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -204,56 +218,65 @@
                 <!-- ===== 样式设置 ===== -->
                 <TabItem Header="🎨 样式设置">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12" Spacing="8">
+                        <StackPanel Margin="4" Spacing="12">
 
-                            <TextBlock Text="🎹 音符样式" Classes="cardTitle" />
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="音符厚度:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="4" Maximum="80"
-                                        Value="{Binding NoteHeight, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding NoteHeight}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="圆角半径:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="0" Maximum="40"
-                                        Value="{Binding NoteCornerRadius, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding NoteCornerRadius}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
-                            <CheckBox Content="音符阴影" IsChecked="{Binding NoteShadow, Mode=TwoWay}" />
+                            <fa:FASettingsExpander Header="🎹 音符样式" Description="厚度、圆角与阴影">
+                                <StackPanel Spacing="10" Margin="0,6,0,0">
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="音符厚度:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="4" Maximum="80"
+                                                Value="{Binding NoteHeight, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding NoteHeight}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="圆角半径:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="40"
+                                                Value="{Binding NoteCornerRadius, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding NoteCornerRadius}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <CheckBox Content="音符阴影" IsChecked="{Binding NoteShadow, Mode=TwoWay}" />
+                                </StackPanel>
+                            </fa:FASettingsExpander>
 
-                            <TextBlock Text="📝 歌词显示" Classes="cardTitle" Margin="0,8,0,0" />
-                            <CheckBox Content="显示歌词" IsChecked="{Binding ShowLyric, Mode=TwoWay}" />
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="垂直偏移:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="5" Maximum="80"
-                                        Value="{Binding LyricOffset, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding LyricOffset}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="📝 歌词显示" Description="显示与垂直偏移">
+                                <StackPanel Spacing="10" Margin="0,6,0,0">
+                                    <CheckBox Content="显示歌词" IsChecked="{Binding ShowLyric, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="垂直偏移:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="5" Maximum="80"
+                                                Value="{Binding LyricOffset, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding LyricOffset}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                            </fa:FASettingsExpander>
 
-                            <TextBlock Text="🎶 音高曲线样式" Classes="cardTitle" Margin="0,8,0,0" />
-                            <CheckBox Content="显示音高曲线" IsChecked="{Binding ShowPitchCurve, Mode=TwoWay}" />
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="曲线宽度:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="1" Maximum="10"
-                                        Value="{Binding PitchCurveWidth, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveWidth}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
-                            <StackPanel Orientation="Horizontal" Spacing="16">
-                                <CheckBox Content="曲线阴影" IsChecked="{Binding PitchCurveShadow, Mode=TwoWay}" />
-                                <CheckBox Content="显示端点" IsChecked="{Binding PitchCurveDots, Mode=TwoWay}" />
-                            </StackPanel>
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="端点大小:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="1" Maximum="20"
-                                        Value="{Binding PitchCurveDotSize, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveDotSize}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
-                            <Grid ColumnDefinitions="110,*,Auto">
-                                <TextBlock Text="曲线平滑度:" VerticalAlignment="Center" />
-                                <Slider Grid.Column="1" Minimum="10" Maximum="300"
-                                        Value="{Binding PitchCurveSmoothness, Mode=TwoWay}" Margin="10,0" />
-                                <TextBlock Grid.Column="2" Text="{Binding PitchCurveSmoothness}" MinWidth="40" TextAlignment="Right" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="🎶 音高曲线样式" Description="宽度、阴影、端点与平滑度">
+                                <StackPanel Spacing="10" Margin="0,6,0,0">
+                                    <CheckBox Content="显示音高曲线" IsChecked="{Binding ShowPitchCurve, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="曲线宽度:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="1" Maximum="10"
+                                                Value="{Binding PitchCurveWidth, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding PitchCurveWidth}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Spacing="16">
+                                        <CheckBox Content="曲线阴影" IsChecked="{Binding PitchCurveShadow, Mode=TwoWay}" />
+                                        <CheckBox Content="显示端点" IsChecked="{Binding PitchCurveDots, Mode=TwoWay}" />
+                                    </StackPanel>
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="端点大小:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="1" Maximum="20"
+                                                Value="{Binding PitchCurveDotSize, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding PitchCurveDotSize}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="96,*,56">
+                                        <TextBlock Text="曲线平滑度:" VerticalAlignment="Center" />
+                                        <Slider Grid.Column="1" Minimum="10" Maximum="300"
+                                                Value="{Binding PitchCurveSmoothness, Mode=TwoWay}" Margin="10,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding PitchCurveSmoothness}" TextAlignment="Right" VerticalAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                            </fa:FASettingsExpander>
 
                         </StackPanel>
                     </ScrollViewer>
@@ -262,51 +285,67 @@
                 <!-- ===== 颜色设置 ===== -->
                 <TabItem Header="🌈 颜色设置">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12" Spacing="8">
+                        <StackPanel Margin="4" Spacing="12">
 
-                            <Grid ColumnDefinitions="150,*,60,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,0,0,8">
-                                <TextBlock Grid.Row="0" Text="音符颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="0" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding NoteColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding NoteColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="0" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="NoteColorHex" />
+                            <fa:FASettingsExpander Header="🎨 音符颜色" Description="普通音符">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding NoteColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding NoteColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="NoteColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                                <TextBlock Grid.Row="1" Text="激活音符颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="1" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding ActiveNoteColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ActiveNoteColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="1" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="ActiveNoteColorHex" />
+                            <fa:FASettingsExpander Header="✅ 激活音符颜色" Description="经过判定线时">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding ActiveNoteColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ActiveNoteColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="ActiveNoteColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                                <TextBlock Grid.Row="2" Text="歌词颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="2" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding LyricColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LyricColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="2" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="LyricColorHex" />
+                            <fa:FASettingsExpander Header="📝 歌词颜色" Description="歌词文字">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding LyricColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding LyricColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="LyricColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                                <TextBlock Grid.Row="3" Text="背景颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="3" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding BackgroundColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding BackgroundColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="3" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="BackgroundColorHex" />
+                            <fa:FASettingsExpander Header="🖼️ 背景颜色" Description="视频背景">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding BackgroundColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding BackgroundColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="BackgroundColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                                <TextBlock Grid.Row="4" Text="判定线颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="4" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding JudgmentLineColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding JudgmentLineColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="4" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="JudgmentLineColorHex" />
+                            <fa:FASettingsExpander Header="🎯 判定线颜色" Description="判定线">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding JudgmentLineColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding JudgmentLineColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="JudgmentLineColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
-                                <TextBlock Grid.Row="5" Text="音高曲线颜色:" VerticalAlignment="Center" />
-                                <Border Grid.Row="5" Grid.Column="1" Width="80" Height="26" CornerRadius="4" Margin="10,0"
-                                        Background="{Binding PitchCurveColorHex, Converter={StaticResource BrushConverter}}" />
-                                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding PitchCurveColorHex}" VerticalAlignment="Center" />
-                                <Button Grid.Row="5" Grid.Column="3" Content="选择" Padding="12,4"
-                                        Command="{Binding ChooseColorCommand}" CommandParameter="PitchCurveColorHex" />
-                            </Grid>
+                            <fa:FASettingsExpander Header="📈 音高曲线颜色" Description="音高曲线">
+                                <Grid ColumnDefinitions="80,*,Auto" Margin="0,6,0,0">
+                                    <Border Width="80" Height="26" CornerRadius="4"
+                                            Background="{Binding PitchCurveColorHex, Converter={StaticResource BrushConverter}}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding PitchCurveColorHex}" VerticalAlignment="Center" Margin="10,0" />
+                                    <Button Grid.Column="2" Content="选择" Padding="12,4"
+                                            Command="{Binding ChooseColorCommand}" CommandParameter="PitchCurveColorHex" />
+                                </Grid>
+                            </fa:FASettingsExpander>
 
                         </StackPanel>
                     </ScrollViewer>
@@ -316,8 +355,3 @@
         </Grid>
     </DockPanel>
 </Window>
-
-
-
-
-
