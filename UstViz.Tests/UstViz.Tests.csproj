@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UstViz.Core\UstViz.Core.csproj" />
     <ProjectReference Include="..\UstViz.Rendering\UstViz.Rendering.csproj" />
+    <ProjectReference Include="..\UstViz.Audio\UstViz.Audio.csproj" />
   </ItemGroup>
 
 
@@ -33,4 +34,5 @@
     <None Include="../Test/python_frame_snapshot.json" Link="Test/python_frame_snapshot.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
+
 

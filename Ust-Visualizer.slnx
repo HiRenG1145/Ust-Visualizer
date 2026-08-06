@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="UstViz.Audio/UstViz.Audio.csproj" />
   <Project Path="UstViz.Cli/UstViz.Cli.csproj" />
   <Project Path="UstViz.Core/UstViz.Core.csproj" />
   <Project Path="UstViz.Rendering/UstViz.Rendering.csproj" />
