@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -291,7 +292,9 @@ public partial class MainViewModel : ViewModelBase
             var config = BuildConfig();
             var project = new UstParser().ParseFile(UstFile);
             string format = OutputFormat.Equals("mp4", StringComparison.OrdinalIgnoreCase) ? "mp4" : "avi";
-            string outPath = Path.Combine(OutputFolder, Path.GetFileNameWithoutExtension(UstFile) + (format == "mp4" ? ".mp4" : ".avi"));
+            string ext = format == "mp4" ? ".mp4" : ".avi";
+            string outPath = GetUniqueOutputPath(OutputFolder, Path.GetFileNameWithoutExtension(UstFile), ext);
+            Log($"输出文件: {outPath}");
 
             IsBusy = true;
             ProgressValue = 0;
@@ -301,10 +304,12 @@ public partial class MainViewModel : ViewModelBase
 
             using IVideoWriter writer = CreateWriter(config, outPath, format);
             var service = new VideoExportService();
+            int totalFrames = VideoExportService.ComputeTotalFrames(project, config);
             var progress = new Progress<double>(p =>
             {
                 ProgressValue = p * 100;
-                ProgressText = $"生成进度: {p:P0}";
+                int frame = (int)Math.Round(p * totalFrames);
+                ProgressText = $"生成进度: {frame}/{totalFrames} 帧 ({p:P0})";
             });
 
             await Task.Run(() => service.ExportAsync(project, config, writer, progress, _cts.Token));
@@ -334,6 +339,35 @@ public partial class MainViewModel : ViewModelBase
 
     private bool CanGenerate() => !IsBusy;
 
+    [RelayCommand]
+    private void OpenOutputFolder()
+    {
+        if (string.IsNullOrWhiteSpace(OutputFolder))
+        {
+            ShowMessage?.Invoke("提示", "请先选择输出文件夹。");
+            return;
+        }
+        try
+        {
+            if (!Directory.Exists(OutputFolder))
+                Directory.CreateDirectory(OutputFolder);
+            Process.Start(new ProcessStartInfo { FileName = OutputFolder, UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ShowMessage?.Invoke("错误", $"无法打开输出文件夹:\n{ex.Message}");
+        }
+    }
+
+    /// <summary>输出文件已存在时自动追加时间戳，避免覆盖旧文件。</summary>
+    private static string GetUniqueOutputPath(string folder, string nameWithoutExt, string ext)
+    {
+        var path = Path.Combine(folder, nameWithoutExt + ext);
+        if (!File.Exists(path))
+            return path;
+        var stamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        return Path.Combine(folder, $"{nameWithoutExt}_{stamp}{ext}");
+    }
     [RelayCommand]
     private void StopGenerate()
     {
@@ -455,5 +489,6 @@ public partial class MainViewModel : ViewModelBase
     private void Log(string message) =>
         Logs.Add($"[{DateTime.Now:HH:mm:ss}] {message}");
 }
+
 
 

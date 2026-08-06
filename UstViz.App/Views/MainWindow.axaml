@@ -88,6 +88,8 @@
                                     Command="{Binding StartPreviewCommand}" />
                             <Button Content="🎬 生成视频" Classes="action"
                                     Command="{Binding GenerateCommand}" />
+                            <Button Content="📂 打开输出文件夹" Classes="action"
+                                    Command="{Binding OpenOutputFolderCommand}" />
                             <Button Content="⏹️ 停止生成" Classes="action"
                                     Command="{Binding StopGenerateCommand}" />
                             <Button Content="☀️/🌙 切换主题" Classes="action" Margin="0,8,0,2"
@@ -314,6 +316,7 @@
         </Grid>
     </DockPanel>
 </Window>
+
 
 
 
