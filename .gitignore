@@ -12,3 +12,7 @@ __pycache__/
 # 渲染效果图（测试产物）
 Test/output/
 
+
+# UI 生成的视频输出（测试用）
+Test/out/
+

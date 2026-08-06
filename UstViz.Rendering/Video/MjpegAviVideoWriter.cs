@@ -139,7 +139,7 @@ public sealed class MjpegAviVideoWriter : IVideoWriter
         uint chunkOffset = (uint)(_stream.Position - _moviDataStart);
 
         WriteFourCc("00dc");
-        _writer.Write(data.Size);
+        _writer.Write((int)data.Size); // 注意：SKData.Size 是 long，必须转 int（AVI size 字段 4 字节）
         _writer.Write(data.ToArray());
 
         // 2 字节对齐
@@ -211,6 +211,7 @@ public sealed class MjpegAviVideoWriter : IVideoWriter
 
     public void Dispose() => Finish();
 }
+
 
 
 

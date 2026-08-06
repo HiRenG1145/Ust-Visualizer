@@ -46,6 +46,61 @@ public class VideoExportTests
         }
     }
 
+
+    [Fact]
+    public void MjpegAviWriter_Chunk_Layout_Is_Correct()
+    {
+        // 回归测试：每个 00dc 帧块必须是 4 字节 size + 紧跟 JPEG SOI (FFD8)。
+        // 曾因 SKData.Size 是 long 而误写 8 字节 size，导致整段视频错位无法打开。
+        var path = Path.Combine(Path.GetTempPath(), $"ustviz_{Guid.NewGuid():N}.avi");
+        try
+        {
+            using (var writer = new MjpegAviVideoWriter(path, 64, 36, 5))
+            {
+                using var f1 = CreateFrame(64, 36, 255, 0, 0);
+                using var f2 = CreateFrame(64, 36, 0, 255, 0);
+                using var f3 = CreateFrame(64, 36, 0, 0, 255);
+                writer.AddFrame(f1);
+                writer.AddFrame(f2);
+                writer.AddFrame(f3);
+            }
+
+            var bytes = File.ReadAllBytes(path);
+            int moviPos = IndexOf(bytes, "movi");
+            int idx1Pos = IndexOf(bytes, "idx1");
+            Assert.True(moviPos >= 0, "缺少 movi");
+            Assert.True(idx1Pos > moviPos, "缺少 idx1");
+
+            // 只扫描 movi 数据区（movi 标签后 ~ idx1 前），避免把 idx1 索引条目误认为帧块
+            int count = 0;
+            int i = moviPos + 4;
+            while (i < idx1Pos - 16)
+            {
+                if (bytes[i] == (byte)'0' && bytes[i + 1] == (byte)'0' &&
+                    bytes[i + 2] == (byte)'d' && bytes[i + 3] == (byte)'c')
+                {
+                    int size = BitConverter.ToInt32(bytes, i + 4);
+                    Assert.True(size > 0, "帧块 size 必须为正");
+                    // size 字段后应直接是 JPEG SOI（曾误写 8 字节 size 导致错位）
+                    Assert.Equal(0xFF, bytes[i + 8]);
+                    Assert.Equal(0xD8, bytes[i + 9]);
+                    count++;
+                    i += 8 + size + ((size & 1) == 1 ? 1 : 0); // 帧块 + 2 字节对齐 padding
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            Assert.Equal(3, count);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
     [Fact]
     public async Task VideoExportService_Exports_Frames()
     {
@@ -129,4 +184,8 @@ public class VideoExportTests
         return -1;
     }
 }
+
+
+
+
 
