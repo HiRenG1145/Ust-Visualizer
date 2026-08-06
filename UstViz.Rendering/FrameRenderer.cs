@@ -29,7 +29,8 @@ public sealed class FrameRenderer : IDisposable
         int width = _config.Width;
         int height = _config.Height;
 
-        var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+        // Bgra8888 与 Avalonia WriteableBitmap 内存布局一致，预览可零转换复制
+        var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
         using var canvas = new SKCanvas(bitmap);
 
         DrawBackground(canvas, width, height);
@@ -286,4 +287,5 @@ public sealed class FrameRenderer : IDisposable
 public readonly record struct NoteLayout(
     int Number, double StartX, double EndX, double Y,
     bool IsActive, byte Alpha, byte R, byte G, byte B);
+
 

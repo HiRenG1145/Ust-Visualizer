@@ -84,6 +84,8 @@
                     <Border Classes="card">
                         <StackPanel Spacing="4">
                             <TextBlock Text="⚡ 快速操作" Classes="cardTitle" />
+                            <Button Content="🎵 实时预览" Classes="action"
+                                    Command="{Binding StartPreviewCommand}" />
                             <Button Content="🎬 生成视频" Classes="action"
                                     Command="{Binding GenerateCommand}" />
                             <Button Content="⏹️ 停止生成" Classes="action"
@@ -312,6 +314,7 @@
         </Grid>
     </DockPanel>
 </Window>
+
 
 
 

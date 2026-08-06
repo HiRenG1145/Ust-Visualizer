@@ -1,0 +1,20 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="UstViz.App.Views.PreviewWindow"
+        Width="960" Height="580"
+        MinWidth="480" MinHeight="320"
+        WindowStartupLocation="CenterOwner"
+        Title="UST 预览 - 空格播放/暂停 · Z/X 前后 10 帧 · 滚轮 ±5 帧 · ESC 退出">
+    <Grid>
+        <Image x:Name="PreviewImage" Stretch="Uniform" Margin="4" />
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="12" Opacity="0.9">
+            <Border Background="#99000000" CornerRadius="8" Padding="12,8">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="FrameText" Foreground="White" FontSize="13" />
+                    <TextBlock x:Name="TimeText" Foreground="White" FontSize="13" />
+                    <TextBlock x:Name="StatusText" Foreground="White" FontSize="13" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

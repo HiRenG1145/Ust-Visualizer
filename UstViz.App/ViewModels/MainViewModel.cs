@@ -21,6 +21,7 @@ public partial class MainViewModel : ViewModelBase
     public Func<string, Task<string?>>? PickColor { get; set; }
     public Func<Task<string?>>? PickFfmpegFile { get; set; }
     public Action<string, string>? ShowMessage { get; set; }
+    public Action<AppConfig, string>? OpenPreviewRequested { get; set; }
 
     // ---- 文件 ----
     [ObservableProperty]
@@ -196,6 +197,18 @@ public partial class MainViewModel : ViewModelBase
         FfmpegPath = path;
         Log($"已指定 ffmpeg: {path}");
     }
+    [RelayCommand(CanExecute = nameof(CanPreview))]
+    private void StartPreview()
+    {
+        if (string.IsNullOrWhiteSpace(UstFile) || !File.Exists(UstFile))
+        {
+            ShowMessage?.Invoke("提示", "请先选择一个存在的 UST 文件。");
+            return;
+        }
+        OpenPreviewRequested?.Invoke(BuildConfig(), UstFile);
+    }
+
+    private bool CanPreview() => !IsBusy;
     [RelayCommand]
     private void ToggleTheme()
     {
@@ -442,4 +455,5 @@ public partial class MainViewModel : ViewModelBase
     private void Log(string message) =>
         Logs.Add($"[{DateTime.Now:HH:mm:ss}] {message}");
 }
+
 

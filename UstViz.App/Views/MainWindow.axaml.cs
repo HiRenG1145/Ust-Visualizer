@@ -1,7 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using UstViz.Audio;
 using UstViz.App.ViewModels;
+using UstViz.Core.Config;
+using UstViz.Core.Models;
+using UstViz.Core.Parsing;
 
 namespace UstViz.App.Views;
 
@@ -25,6 +29,7 @@ public partial class MainWindow : Window
             vm.PickColor = PickColorAsync;
             vm.PickFfmpegFile = PickFfmpegFileAsync;
             vm.ShowMessage = ShowMessage;
+            vm.OpenPreviewRequested = OpenPreview;
         }
     }
 
@@ -111,7 +116,22 @@ public partial class MainWindow : Window
         return await dialog.ShowDialog<string?>(this);
     }
 
+    private void OpenPreview(AppConfig config, string ustFile)
+    {
+        try
+        {
+            var project = new UstParser().ParseFile(ustFile);
+            var audio = new NaudioAudioPlayer();
+            var window = new PreviewWindow(project, config, audio) { Icon = Icon };
+            window.Show(this);
+        }
+        catch (Exception ex)
+        {
+            ShowMessage("预览错误", $"无法打开预览窗口:\n{ex.Message}");
+        }
+    }
     private void ShowMessage(string title, string message) =>
         _ = new MessageBoxDialog(title, message).ShowDialog(this);
 }
+
 
