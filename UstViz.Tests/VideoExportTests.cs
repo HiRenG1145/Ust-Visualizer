@@ -47,6 +47,27 @@ public class VideoExportTests
     }
 
 
+
+    [Fact]
+    public void FfmpegLocator_Returns_Explicit_Path()
+    {
+        var temp = Path.GetTempFileName();
+        try
+        {
+            Assert.Equal(temp, FfmpegLocator.Locate(temp));
+        }
+        finally
+        {
+            File.Delete(temp);
+        }
+    }
+
+    [Fact]
+    public void FfmpegLocator_Returns_Null_For_Missing_Path()
+    {
+        Assert.Null(FfmpegLocator.Locate(@"C:\nonexistent\dir\ffmpeg.exe"));
+    }
+
     [Fact]
     public void MjpegAviWriter_Chunk_Layout_Is_Correct()
     {
@@ -184,6 +205,7 @@ public class VideoExportTests
         return -1;
     }
 }
+
 
 
 

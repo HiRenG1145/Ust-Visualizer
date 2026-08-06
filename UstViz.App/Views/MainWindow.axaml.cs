@@ -23,6 +23,7 @@ public partial class MainWindow : Window
             vm.PickSaveConfigPath = PickSaveConfigPathAsync;
             vm.PickLoadConfigPath = PickLoadConfigPathAsync;
             vm.PickColor = PickColorAsync;
+            vm.PickFfmpegFile = PickFfmpegFileAsync;
             vm.ShowMessage = ShowMessage;
         }
     }
@@ -90,6 +91,20 @@ public partial class MainWindow : Window
         return files.Count > 0 ? files[0].TryGetLocalPath() : null;
     }
 
+    private async Task<string?> PickFfmpegFileAsync()
+    {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择 ffmpeg 可执行文件",
+            FileTypeFilter =
+            [
+                new FilePickerFileType("ffmpeg") { Patterns = ["ffmpeg.exe"] },
+                FilePickerFileTypes.All,
+            ],
+        });
+        return files.Count > 0 ? files[0].TryGetLocalPath() : null;
+    }
+
     private async Task<string?> PickColorAsync(string currentHex)
     {
         var dialog = new ColorPickerDialog(currentHex) { Icon = Icon };
@@ -99,3 +114,4 @@ public partial class MainWindow : Window
     private void ShowMessage(string title, string message) =>
         _ = new MessageBoxDialog(title, message).ShowDialog(this);
 }
+

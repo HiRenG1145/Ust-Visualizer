@@ -43,6 +43,12 @@ public sealed class AppConfig
     public bool TransparentBackground { get; set; } = false;
     public int LyricOffset { get; set; } = 15;
 
+    // 输出
+    /// <summary>输出格式："avi"（默认，无依赖）或 "mp4"（需要 ffmpeg）。</summary>
+    public string OutputFormat { get; set; } = "avi";
+
+    /// <summary>ffmpeg 可执行文件路径；为空时自动检测（PATH / 常见安装位置）。</summary>
+    public string FfmpegPath { get; set; } = "";
     // 歌词与音高曲线
     public bool ShowLyric { get; set; } = true;
     public bool ShowPitchCurve { get; set; } = true;
@@ -54,4 +60,5 @@ public sealed class AppConfig
 
     public static AppConfig CreateDefault() => new();
 }
+
 

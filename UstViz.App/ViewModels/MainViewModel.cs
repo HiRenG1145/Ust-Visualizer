@@ -19,6 +19,7 @@ public partial class MainViewModel : ViewModelBase
     public Func<Task<string?>>? PickSaveConfigPath { get; set; }
     public Func<Task<string?>>? PickLoadConfigPath { get; set; }
     public Func<string, Task<string?>>? PickColor { get; set; }
+    public Func<Task<string?>>? PickFfmpegFile { get; set; }
     public Action<string, string>? ShowMessage { get; set; }
 
     // ---- 文件 ----
@@ -30,6 +31,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial string FontFile { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string FfmpegPath { get; set; } = "";
 
     // ---- 基本设置 ----
     [ObservableProperty]
@@ -129,6 +133,12 @@ public partial class MainViewModel : ViewModelBase
 
     public ObservableCollection<string> Logs { get; } = [];
 
+    /// <summary>可选的输出格式（avi / mp4）。</summary>
+    public string[] OutputFormats { get; } = ["avi", "mp4"];
+
+    [ObservableProperty]
+    public partial string OutputFormat { get; set; } = "avi";
+
     private CancellationTokenSource? _cts;
 
     public MainViewModel()
@@ -175,6 +185,17 @@ public partial class MainViewModel : ViewModelBase
         Log($"已选择字体: {Path.GetFileName(path)}");
     }
 
+    [RelayCommand]
+    private async Task SelectFfmpegFileAsync()
+    {
+        if (PickFfmpegFile is null)
+            return;
+        var path = await PickFfmpegFile();
+        if (path is null)
+            return;
+        FfmpegPath = path;
+        Log($"已指定 ffmpeg: {path}");
+    }
     [RelayCommand]
     private void ToggleTheme()
     {
@@ -256,7 +277,8 @@ public partial class MainViewModel : ViewModelBase
             Directory.CreateDirectory(OutputFolder);
             var config = BuildConfig();
             var project = new UstParser().ParseFile(UstFile);
-            string outPath = Path.Combine(OutputFolder, Path.GetFileNameWithoutExtension(UstFile) + ".avi");
+            string format = OutputFormat.Equals("mp4", StringComparison.OrdinalIgnoreCase) ? "mp4" : "avi";
+            string outPath = Path.Combine(OutputFolder, Path.GetFileNameWithoutExtension(UstFile) + (format == "mp4" ? ".mp4" : ".avi"));
 
             IsBusy = true;
             ProgressValue = 0;
@@ -264,7 +286,7 @@ public partial class MainViewModel : ViewModelBase
             _cts = new CancellationTokenSource();
             Log($"开始生成视频: {outPath}");
 
-            using var writer = new MjpegAviVideoWriter(outPath, config.Width, config.Height, config.Fps);
+            using IVideoWriter writer = CreateWriter(config, outPath, format);
             var service = new VideoExportService();
             var progress = new Progress<double>(p =>
             {
@@ -306,6 +328,24 @@ public partial class MainViewModel : ViewModelBase
         Log("请求停止生成");
     }
 
+    private IVideoWriter CreateWriter(AppConfig config, string outPath, string format)
+    {
+        if (format == "mp4")
+        {
+            var ffmpeg = FfmpegLocator.Locate(FfmpegPath);
+            if (ffmpeg is null)
+            {
+                Log("未找到 ffmpeg，回退输出 AVI");
+                ShowMessage?.Invoke("提示", "未找到 ffmpeg，已回退输出 AVI。可在“输出设置”中指定 ffmpeg 路径。");
+                return new MjpegAviVideoWriter(Path.ChangeExtension(outPath, ".avi"), config.Width, config.Height, config.Fps);
+            }
+
+            Log($"使用 ffmpeg: {ffmpeg}");
+            return new FfmpegVideoWriter(outPath, config.Width, config.Height, config.Fps, ffmpeg);
+        }
+
+        return new MjpegAviVideoWriter(outPath, config.Width, config.Height, config.Fps);
+    }
     // ================= 配置转换 =================
 
     public AppConfig BuildConfig() => new()
@@ -326,6 +366,8 @@ public partial class MainViewModel : ViewModelBase
         FontPath = FontFile,
         FontSize = (int)FontSize,
         FallbackFont = "",
+        OutputFormat = OutputFormat,
+        FfmpegPath = FfmpegPath,
         NoteHeight = (int)NoteHeight,
         NoteCornerRadius = (int)NoteCornerRadius,
         NoteShadow = NoteShadow,
@@ -369,6 +411,8 @@ public partial class MainViewModel : ViewModelBase
         JudgmentLineColorHex = c.JudgmentLineColor;
         PitchCurveColorHex = c.PitchCurveColor;
         FontFile = c.FontPath;
+        OutputFormat = string.IsNullOrWhiteSpace(c.OutputFormat) ? "avi" : c.OutputFormat;
+        FfmpegPath = c.FfmpegPath;
     }
 
     private string GetColorHex(string key) => key switch
@@ -398,3 +442,4 @@ public partial class MainViewModel : ViewModelBase
     private void Log(string message) =>
         Logs.Add($"[{DateTime.Now:HH:mm:ss}] {message}");
 }
+

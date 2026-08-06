@@ -25,6 +25,9 @@ public sealed class MjpegAviVideoWriter : IVideoWriter
     private int _frameCount;
     private bool _finished;
 
+    /// <summary>AVI 32 位字段上限约 2GB，超过会损坏；留余量在 1.8GB 时阻止继续写入。</summary>
+    private const long MaxSafeFileSize = 1_800_000_000;
+
     public int Width { get; }
     public int Height { get; }
     public int Fps { get; }
@@ -128,6 +131,10 @@ public sealed class MjpegAviVideoWriter : IVideoWriter
     {
         if (_finished)
             throw new InvalidOperationException("写入器已结束。");
+
+        if (_stream.Position > MaxSafeFileSize)
+            throw new InvalidOperationException(
+                "AVI 文件即将超过 2GB 限制，继续生成会导致视频损坏。请改用 MP4 格式（需要 ffmpeg）输出。");
         if (frame.Width != Width || frame.Height != Height)
             throw new ArgumentException($"帧尺寸 {frame.Width}x{frame.Height} 与视频尺寸 {Width}x{Height} 不一致。");
 
@@ -211,6 +218,7 @@ public sealed class MjpegAviVideoWriter : IVideoWriter
 
     public void Dispose() => Finish();
 }
+
 
 
 

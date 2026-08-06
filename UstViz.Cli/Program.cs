@@ -66,7 +66,14 @@ var parser = new UstParser { Log = Console.WriteLine };
 var project = parser.ParseFile(ustPath);
 Console.WriteLine($"音符数: {project.Notes.Count}, 总时长: {project.TotalDuration:F2}s, 速度: {project.Tempo} BPM");
 
-string outputPath = GetArg(args, "--out") ?? Path.ChangeExtension(ustPath, ffmpegPath is null ? ".avi" : ".mp4");
+string outputPath = GetArg(args, "--out") ?? Path.ChangeExtension(ustPath, ".avi");
+if (ffmpegPath is null && Path.GetExtension(outputPath).Equals(".mp4", StringComparison.OrdinalIgnoreCase))
+    ffmpegPath = FfmpegLocator.Locate();
+if (ffmpegPath is null && Path.GetExtension(outputPath).Equals(".mp4", StringComparison.OrdinalIgnoreCase))
+{
+    Console.WriteLine("警告: 未找到 ffmpeg，回退输出 AVI");
+    outputPath = Path.ChangeExtension(outputPath, ".avi");
+}
 
 int totalFrames = VideoExportService.ComputeTotalFrames(project, config);
 Console.WriteLine($"输出: {outputPath} | {config.Width}x{config.Height} @ {config.Fps}fps | 共 {totalFrames} 帧");
@@ -87,3 +94,4 @@ await service.ExportAsync(project, config, writer, progress, maxFrames: maxFrame
 sw.Stop();
 
 Console.WriteLine($"\r完成: {outputPath} | 用时 {sw.Elapsed.TotalSeconds:F1}s");
+

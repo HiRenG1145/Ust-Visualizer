@@ -36,6 +36,8 @@ public class AppConfigTests
         Assert.Equal(5, c.PitchCurveDotSize);
         Assert.Equal(50, c.PitchCurveSmoothness);
         Assert.Equal(0, c.VerticalOffset);
+        Assert.Equal("avi", c.OutputFormat);
+        Assert.Equal("", c.FfmpegPath);
     }
 
     [Fact]
@@ -66,5 +68,6 @@ public class AppConfigTests
         }
     }
 }
+
 
 

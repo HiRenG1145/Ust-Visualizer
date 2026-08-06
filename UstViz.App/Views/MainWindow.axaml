@@ -95,6 +95,24 @@
 
                     <Border Classes="card">
                         <StackPanel Spacing="4">
+                            <TextBlock Text="🎥 输出设置" Classes="cardTitle" />
+                            <Grid ColumnDefinitions="64,*">
+                                <TextBlock Text="格式:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding OutputFormats}"
+                                          SelectedItem="{Binding OutputFormat, Mode=TwoWay}" />
+                            </Grid>
+                            <TextBlock Text="ffmpeg 路径（MP4 需要，可留空自动检测）"
+                                       FontSize="12" Foreground="#808080" TextWrapping="Wrap" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding FfmpegPath, Mode=TwoWay}"
+                                         PlaceholderText="自动检测 / 手动指定 ffmpeg.exe" />
+                                <Button Grid.Column="1" Content="浏览" Margin="6,0,0,0"
+                                        Command="{Binding SelectFfmpegFileCommand}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="card">
+                        <StackPanel Spacing="4">
                             <TextBlock Text="⚙️ 配置管理" Classes="cardTitle" />
                             <Button Content="💾 保存配置" Classes="action"
                                     Command="{Binding SaveConfigCommand}" />
@@ -294,4 +312,6 @@
         </Grid>
     </DockPanel>
 </Window>
+
+
 
