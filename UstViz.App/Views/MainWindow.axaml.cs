@@ -1,8 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using UstViz.Audio;
+using FluentAvalonia.UI.Controls;
 using UstViz.App.ViewModels;
+using UstViz.Audio;
 using UstViz.Core.Config;
 using UstViz.Core.Models;
 using UstViz.Core.Parsing;
@@ -32,6 +33,39 @@ public partial class MainWindow : Window
             vm.OpenPreviewRequested = OpenPreview;
         }
     }
+
+    // ================= 侧边栏导航 =================
+
+    private void OnNavSelectionChanged(object? sender, FANavigationViewSelectionChangedEventArgs e)
+    {
+        if (e.SelectedItem is FANavigationViewItem item && item.Tag is string tag)
+            ShowPage(tag);
+    }
+
+    private void ShowPage(string tag)
+    {
+        PageFile.IsVisible = tag == "file";
+        PageGenerate.IsVisible = tag == "generate";
+        PageBasic.IsVisible = tag == "basic";
+        PageAnimation.IsVisible = tag == "animation";
+        PageStyle.IsVisible = tag == "style";
+        PageColor.IsVisible = tag == "color";
+    }
+
+    // ================= 对话框（遮罩式 ContentDialog） =================
+
+    private async void ShowMessage(string title, string message)
+    {
+        var dialog = new FAContentDialog
+        {
+            Title = title,
+            Content = message,
+            CloseButtonText = "确定",
+        };
+        await dialog.ShowAsync(this);
+    }
+
+    // ================= 文件选择 =================
 
     private async Task<string?> PickUstFileAsync()
     {
@@ -116,6 +150,8 @@ public partial class MainWindow : Window
         return await dialog.ShowDialog<string?>(this);
     }
 
+    // ================= 预览 =================
+
     private void OpenPreview(AppConfig config, string ustFile)
     {
         try
@@ -130,8 +166,4 @@ public partial class MainWindow : Window
             ShowMessage("预览错误", $"无法打开预览窗口:\n{ex.Message}");
         }
     }
-    private void ShowMessage(string title, string message) =>
-        _ = new MessageBoxDialog(title, message).ShowDialog(this);
 }
-
-
