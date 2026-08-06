@@ -1,0 +1,10 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+*.suo
+
+# Python
+__pycache__/
+*.py[cod]
