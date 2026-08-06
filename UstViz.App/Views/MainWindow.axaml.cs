@@ -42,13 +42,6 @@ public partial class MainWindow : Window
     {
         if (e.SelectedItem is FANavigationViewItem item && item.Tag is string tag)
         {
-            if (tag == "theme")
-            {
-                // 底部“切换主题”项：执行主题切换，不切换页面
-                if (DataContext is MainViewModel vm)
-                    vm.ToggleThemeCommand.Execute(null);
-                return;
-            }
             ShowPage(tag);
         }
     }
@@ -64,6 +57,7 @@ public partial class MainWindow : Window
             "animation" => PageAnimation,
             "style" => PageStyle,
             "color" => PageColor,
+            "settings" => PageSettings,
             _ => null,
         };
 
@@ -73,6 +67,7 @@ public partial class MainWindow : Window
         PageAnimation.IsVisible = tag == "animation";
         PageStyle.IsVisible = tag == "style";
         PageColor.IsVisible = tag == "color";
+        PageSettings.IsVisible = tag == "settings";
 
         if (page is null)
             return;
@@ -207,6 +202,7 @@ public partial class MainWindow : Window
         }
     }
 }
+
 
 
 

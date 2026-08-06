@@ -105,7 +105,7 @@
                 </fa:FANavigationViewItem>
             </fa:FANavigationView.MenuItems>
             <fa:FANavigationView.FooterMenuItems>
-                <fa:FANavigationViewItem Content="切换主题" Tag="theme">
+                <fa:FANavigationViewItem Content="设置" Tag="settings">
                     <fa:FANavigationViewItem.IconSource>
                         <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="20" />
                     </fa:FANavigationViewItem.IconSource>
@@ -384,11 +384,40 @@
                         </fa:FASettingsExpander>
                     </ScrollViewer>
 
+                    <!-- 设置页 -->
+                    <ScrollViewer Grid.Row="1" x:Name="PageSettings" IsVisible="False" VerticalScrollBarVisibility="Auto">
+                        <StackPanel MaxWidth="720" Spacing="12" Margin="0,0,12,0">
+                            <fa:FASettingsExpander Header="外观" Description="切换深色 / 浅色主题">
+                                <fa:FASettingsExpander.IconSource>
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Setting}" FontSize="20" />
+                                </fa:FASettingsExpander.IconSource>
+                                <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="当前主题" />
+                                        <TextBlock Text="{Binding ThemeText}" Classes="hint" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="切换主题" Classes="accent" Padding="16,6"
+                                            Command="{Binding ToggleThemeCommand}" />
+                                </Grid>
+                            </fa:FASettingsExpander>
+                            <fa:FASettingsExpander Header="关于" Description="UST Visualizer · C# + Avalonia">
+                                <fa:FASettingsExpander.IconSource>
+                                    <fa:FASymbolIconSource Symbol="{x:Static fa:FASymbol.Audio}" FontSize="20" />
+                                </fa:FASettingsExpander.IconSource>
+                                <StackPanel Spacing="4" Margin="0,6,0,0">
+                                    <TextBlock Text="UTAU 工程可视化 · 生成滚动音符视频" />
+                                    <TextBlock Classes="hint" Text="许可证：GNU GPL v3" />
+                                </StackPanel>
+                            </fa:FASettingsExpander>
+                        </StackPanel>
+                    </ScrollViewer>
+
                 </Grid>
             </fa:FANavigationView.Content>
         </fa:FANavigationView>
     </DockPanel>
 </Window>
+
 
 
 

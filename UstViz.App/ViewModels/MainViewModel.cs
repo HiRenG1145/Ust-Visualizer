@@ -123,6 +123,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsDarkTheme { get; set; } = true;
 
+    /// <summary>当前主题的中文文本（设置页显示）。</summary>
+    public string ThemeText => IsDarkTheme ? "深色" : "浅色";
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(GenerateCommand))]
     public partial bool IsBusy { get; set; }
@@ -215,6 +218,7 @@ public partial class MainViewModel : ViewModelBase
     {
         IsDarkTheme = !IsDarkTheme;
         Application.Current!.RequestedThemeVariant = IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
+        OnPropertyChanged(nameof(ThemeText));
         Log(IsDarkTheme ? "已切换到深色主题" : "已切换到浅色主题");
     }
 
@@ -489,6 +493,7 @@ public partial class MainViewModel : ViewModelBase
     private void Log(string message) =>
         Logs.Add($"[{DateTime.Now:HH:mm:ss}] {message}");
 }
+
 
 
 
