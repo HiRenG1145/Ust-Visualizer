@@ -2,7 +2,7 @@ using System.Text.Json;
 using UstViz.Core.Config;
 using UstViz.Core.Models;
 using UstViz.Core.Parsing;
-using UstViz.Core.Rendering;
+using UstViz.Core.Algorithms;
 
 namespace UstViz.Tests;
 
@@ -42,7 +42,7 @@ public class UstParserTests
     [Fact]
     public void Encoding_Detection_Returns_Gbk()
     {
-        Assert.Equal("gbk", UstTextEncoding.DetectEncoding(SamplePath));
+        Assert.Equal("gbk", new UstTextEncoding().DetectEncoding(SamplePath));
     }
 
     [Fact]
@@ -128,3 +128,5 @@ public class UstParserTests
             Assert.Equal(element[i].GetString(), actual[i]);
     }
 }
+
+

@@ -22,7 +22,7 @@ public class AppConfigTests
         Assert.Equal(500, c.ScrollSpeed, 6);
         Assert.Equal(1.0, c.FadeDuration, 6);
         Assert.Equal(24, c.FontSize);
-        Assert.Equal("simsun", c.FallbackFont);
+        Assert.Equal("", c.FallbackFont); // 平台默认字体由 IPlatformDefaults 提供
         Assert.Equal(20, c.NoteHeight);
         Assert.Equal(5, c.NoteCornerRadius);
         Assert.True(c.NoteShadow);
@@ -52,8 +52,8 @@ public class AppConfigTests
             config.NoteColor = "#123456";
             config.FontPath = @"C:\fonts\my.ttf";
 
-            ConfigFile.Save(path, config);
-            var loaded = ConfigFile.Load(path);
+            new ConfigFile().Save(path, config);
+            var loaded = new ConfigFile().Load(path);
 
             Assert.Equal(1280, loaded.Width);
             Assert.Equal(750, loaded.ScrollSpeed, 6);
@@ -66,3 +66,5 @@ public class AppConfigTests
         }
     }
 }
+
+

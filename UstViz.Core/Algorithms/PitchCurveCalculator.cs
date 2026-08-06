@@ -1,6 +1,6 @@
 using UstViz.Core.Models;
 
-namespace UstViz.Core.Rendering;
+namespace UstViz.Core.Algorithms;
 
 /// <summary>
 /// 音高曲线计算，与 UstViz.py USTParser.calculate_pitch_curve /
@@ -104,3 +104,4 @@ public static class PitchCurveCalculator
         return list;
     }
 }
+

@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
+using UstViz.Core.Abstractions;
+using UstViz.Core.IO;
 using UstViz.Core.Models;
 
 namespace UstViz.Core.Parsing;
@@ -7,6 +9,19 @@ namespace UstViz.Core.Parsing;
 /// <summary>UST 文件解析器（与 UstViz.py 的 USTParser 行为一致）。</summary>
 public sealed class UstParser
 {
+    private readonly IFileSystem _fileSystem;
+    private readonly UstTextEncoding _textEncoding;
+
+    /// <summary>
+    /// 创建解析器。默认使用系统文件系统与默认编码列表（utf-8/shift_jis/gbk/big5），
+    /// 可通过参数注入自定义实现，便于测试与替换。
+    /// </summary>
+    public UstParser(IFileSystem? fileSystem = null, UstTextEncoding? textEncoding = null)
+    {
+        _fileSystem = fileSystem ?? new SystemFileSystem();
+        _textEncoding = textEncoding ?? new UstTextEncoding(_fileSystem);
+    }
+
     private static readonly Regex NoteBlockRegex = new(
         @"\[#(\d+)\](.*?)(?=\[#\d+\]|$)", RegexOptions.Singleline | RegexOptions.Compiled);
 
@@ -27,7 +42,7 @@ public sealed class UstParser
     /// <summary>解析 UST 文件，返回工程模型。编码自动探测。</summary>
     public UstProject ParseFile(string path)
     {
-        string content = UstTextEncoding.ReadAllText(path);
+        string content = _textEncoding.ReadAllText(path);
         var project = new UstProject();
         ParseMetadata(content, project);
         ParseNotes(content, project);
@@ -230,3 +245,5 @@ public sealed class UstParser
             : defaultValue;
     }
 }
+
+

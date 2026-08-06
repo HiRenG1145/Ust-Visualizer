@@ -28,7 +28,13 @@ public sealed class AppConfig
     // 字体
     public string FontPath { get; set; } = "";
     public int FontSize { get; set; } = 24;
-    public string FallbackFont { get; set; } = "simsun";
+
+    /// <summary>
+    /// 首选回退字体族名。默认空字符串表示"由平台默认值决定"
+    /// （见 <see cref="UstViz.Core.Abstractions.IPlatformDefaults.PreferredFontFamilies"/>），
+    /// 避免把 Windows 专用字体名（如 simsun）写死进配置。
+    /// </summary>
+    public string FallbackFont { get; set; } = "";
 
     // 音符样式
     public int NoteHeight { get; set; } = 20;
@@ -48,3 +54,4 @@ public sealed class AppConfig
 
     public static AppConfig CreateDefault() => new();
 }
+
