@@ -1,5 +1,5 @@
-﻿using Avalonia;
-using System;
+using Avalonia;
+using Avalonia.Media;
 
 namespace UstViz.App;
 
@@ -14,11 +14,18 @@ sealed class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        // 默认字体按平台选择（含中文），避免 Inter 不含中文导致显示问题
+        var defaultFamily = OperatingSystem.IsWindows() ? "Microsoft YaHei UI"
+            : OperatingSystem.IsMacOS() ? "PingFang SC"
+            : "Noto Sans CJK SC";
+
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
 #if DEBUG
             .WithDeveloperTools()
 #endif
-            .WithInterFont()
+            .With(new FontManagerOptions { DefaultFamilyName = defaultFamily })
             .LogToTrace();
+    }
 }

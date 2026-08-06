@@ -1,5 +1,7 @@
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using UstViz.App.ViewModels;
@@ -42,14 +44,43 @@ public partial class MainWindow : Window
             ShowPage(tag);
     }
 
+
     private void ShowPage(string tag)
     {
+        var page = tag switch
+        {
+            "file" => (Control)PageFile,
+            "generate" => PageGenerate,
+            "basic" => PageBasic,
+            "animation" => PageAnimation,
+            "style" => PageStyle,
+            "color" => PageColor,
+            _ => null,
+        };
+
         PageFile.IsVisible = tag == "file";
         PageGenerate.IsVisible = tag == "generate";
         PageBasic.IsVisible = tag == "basic";
         PageAnimation.IsVisible = tag == "animation";
         PageStyle.IsVisible = tag == "style";
         PageColor.IsVisible = tag == "color";
+
+        if (page is null)
+            return;
+
+        // 页面切换过渡：淡入 + 轻微右滑（Entrance 风格）
+        const double slideOffset = 24;
+        var duration = TimeSpan.FromMilliseconds(200);
+
+        page.RenderTransform = new TranslateTransform(slideOffset, 0);
+        page.Opacity = 0;
+        page.Transitions =
+        [
+            new DoubleTransition { Property = OpacityProperty, Duration = duration },
+            new DoubleTransition { Property = TranslateTransform.XProperty, Duration = duration },
+        ];
+        page.Opacity = 1;
+        ((TranslateTransform)page.RenderTransform).X = 0;
     }
 
     // ================= 对话框（遮罩式 ContentDialog） =================
@@ -167,3 +198,5 @@ public partial class MainWindow : Window
         }
     }
 }
+
+

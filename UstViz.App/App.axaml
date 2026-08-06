@@ -9,6 +9,11 @@
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <!-- Fluent 图标字体（FASymbol 使用）：优先 Segoe Fluent Icons，Win10 回退 MDL2 -->
+        <FontFamily x:Key="SymbolThemeFontFamily">Segoe Fluent Icons</FontFamily>
+    </Application.Resources>
+
     <Application.Styles>
         <!-- PreferUserAccentColor: 主题色跟随系统强调色 -->
         <fa:FluentAvaloniaTheme PreferUserAccentColor="True" />
